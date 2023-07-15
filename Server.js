@@ -11,7 +11,7 @@ app.use(express.json());
 
 // 处理根路径请求
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index-goodfriend.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // 处理注册请求
