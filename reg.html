@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>會員註冊</title>
+		<meta name="keywords" content="會員註冊">
+		<meta name="description" content="會員註冊">
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script language="javascript" type="text/javascript">  
+			var code ; //在全局 定义验证码  
+			function createCode()  
+			{   
+			  code = "";  
+			  var codeLength = 6;//验证码的长度  
+			  var checkCode = document.getElementById("checkCode");  
+			  var selectChar = new Array(0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');//所有候选组成验证码的字符，当然也可以用中文的  
+			  for(var i=0;i<codeLength;i++)  
+			  {  
+				 
+			  var charIndex = Math.floor(Math.random()*36);  
+			  code +=selectChar[charIndex];  
+			  }   
+			  if(checkCode)  
+			  {  
+				checkCode.className="code";  
+				checkCode.value = code;  
+			  }  
+				
+			}  
+			  
+			 function validate ()  
+			{  
+			  var inputCode = document.getElementById("input1").value;  
+			  if(inputCode.length <=0)  
+			  {  
+				  alert("請輸入驗證碼！");  
+			  }  
+			  else if(inputCode != code )  
+			  {  
+				 alert("驗證碼輸入錯誤！");  
+				 createCode();
+			  }else{
+				register();
+			  }
+
+			  }  
+			  function register() {
+    			// 获取表单中的数据
+    			var name = $('#name').val();
+    			var userAccount = $('#user_account').val();
+    			var password = $('#password').val();
+				var confirmPassword = $('#confirm_password').val();
+    			var email = $('#email').val();
+				if (password !== confirmPassword) {
+        		alert('密碼與確認密碼不相符！');
+        		return;
+    			}
+    			// 创建要发送的数据对象
+    			var data = {
+      			name: name,
+      			user_account: userAccount,
+      			password: password,
+      			email: email
+    			};
+
+    			// 发送注册请求
+    			$.ajax({
+      			url: '/register',
+      			type: 'POST',
+      			data: JSON.stringify(data),
+	  			contentType: 'application/json',
+      			success: function(response) {
+        		// 注册成功的处理逻辑
+        		alert('注册成功！');
+      			},
+      			error: function(xhr, status, error) {
+        		// 注册失败的处理逻辑
+        		alert('注册失败：' + error);
+      			}
+    		});
+  			}
+		   </script>
+
+	</head>
+	<body onload="createCode()">
+		<div class="header">
+			<div class="top">
+				<div class="meihua"><img src="images/meihua.jpg"></div>
+			    <div class="logo"><a href="index.html"><img src="images/logo.png"></a></div>
+			</div>
+		</div>
+		<div class="reg-box">
+			<div class="reg">
+				<p><img src="images/zhuce.png"/><span>免費註冊</span></p>
+				<div class="chuangjian">
+					<span>創建您的帳號</span>
+					<em>(以下信息皆為必填項，請認真填寫！)</em>
+				</div>
+				<ul class="cj-infor">
+					<li>			
+						<span><i>*</i>請輸入姓名</span>
+						<input type="text" class="cj-input" id= "name"/>
+					</li>
+					<li>			
+						<span><i>*</i>請輸入您的帳號</span>
+						<input type="text" class="cj-input" id = "user_account"/>
+					</li>
+					<li>
+						<span><i>*</i>請輸入登入密碼</span>
+						<input type="password" class="cj-input" id = "password"/>
+						<em class="tishi">6-18個字符，請使用字母家數字的組合密碼不能單獨使用字母、數字或符號</em>
+					</li>
+					<li>
+						<span><i>*</i>確認登入密碼</span>
+						<input type="password" class="cj-input" id="confirm_password"/>
+						<em class="tishi">請設置個比較複雜的密碼</em>
+					</li>
+					<li>
+						<span><i>*</i>E-mail</span>
+						<input type="text" class="cj-input" id = "email" />
+						<em class="find">找回密碼用</em>
+					</li>
+					<li>
+						<span><i>*</i>驗證碼</span>
+						<input type="text" class="cj-input" id="input1" />
+						 <input type="text" onclick="createCode()" readonly="readonly" id="checkCode" class="unchanged" style="width: 80px"  />
+					</li>
+				</ul>
+
+			<button type="submit" class="login-btn" onclick="validate()" style="margin: 80px auto; display: block;">註冊</button>
+			</div>
+		</div>
+		<div class="copyright">
+			版權所有: 黃子杰的
+		</div>
+  
+	</body>
+</html>

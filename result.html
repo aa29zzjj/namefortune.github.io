@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>浪人算命</title>
+		<meta name="keywords" content="XXX">
+		<meta name="description" content="XXX">
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+	</head>
+	<body>
+		<div class="header">
+			<div class="top">
+				<div class="meihua"><img src="images/meihua.jpg"></div>
+			    <div class="logo"><a href="index.html"><img src="images/logo.png"></a></div>
+			</div>
+		</div>
+		<div class="result">
+
+			  
+			  <div class="result">
+				<div class="title">
+					<script>
+						var lastName = localStorage.getItem('lastName');
+						var firstName = localStorage.getItem('firstName');
+						document.write(lastName);
+						document.write(firstName);
+					</script>算命结果示例
+				</div>
+				<textarea name="txtBazi" rows="2" cols="150" id="txtBazi"></textarea>
+				<div class="fortune-container">
+					<textarea name="txtFortune" rows="30" cols="100" id="txtFortune"></textarea>	
+				</div>
+				<script src = "js/SpecificNumber.js"></script>
+				<script src = "js/NameSeeker.js"></script>
+				<script src = "js/Attribute.js"></script>
+				<script src = "js/AttributeCalculator.js"></script>
+				<script src = "js/HeavenlyStems.js"></script>
+				<script src = "js/TerrestrailBranch.js"></script>
+				<script src="js/kangxi.js"></script>
+				<script>
+					var lastName = String(localStorage.getItem('lastName'));
+					var firstName = String(localStorage.getItem('firstName'));
+					var lastNameStoke = findLastNameStrokeByCharacter(lastName);
+					var middleName1Stroke =  findStrokeByCharacter(firstName.charAt(0));
+					var middleName = firstName.slice(1);
+					var middleName2Stroke = 0;
+					if(middleName.length === 0){
+						middleName2Stroke = 1;
+					}else if(middleName.length === 1){
+						middleName2Stroke = findStrokeByCharacter(middleName);
+					}else{
+						middleName2Stroke = findLastNameStrokeByCharacter(middleName);
+					}
+					var selectedOption = localStorage.getItem('selectedOption');
+					var txtBazi = document.getElementById('txtBazi');
+					var txtFortune = document.getElementById('txtFortune');
+					var tester = new NameSeeker(lastNameStoke, middleName1Stroke, middleName2Stroke);
+					var tester_attribute = new Attribute(tester);
+					var tester_heavenly_stems = new HeavenlyStems(tester);
+        			var tester_terrestrial = new TerrestrialBranch(tester);
+					var nature = new Map();
+					nature = AttributeCalculator.nature_fortune(tester_attribute);
+					var absent = new Map();
+					absent = AttributeCalculator.abs_fortune(tester_attribute);
+					var nature_fortune = SpecificNumber.natureFortune(tester);
+					txtBazi.value = '姓名：' + lastName + firstName + '\t'+'性别： '+ selectedOption+'\n';
+					txtFortune.value = '天格: ' + tester.getSkyBlock()+ '\t' + tester_attribute.get_sky_att() + '\t' + tester_heavenly_stems.get_sky_stem() + '\t' + tester_terrestrial.get_sky_branch()+'\n';
+					txtFortune.value += '人格: ' + tester.getPeopleBlock()+ '\t' + tester_attribute.get_people_att() + '\t' + tester_heavenly_stems.get_people_stem() + '\t' + tester_terrestrial.get_people_branch()+"\n";
+					txtFortune.value += '地格: ' +  tester.getGroundBlock()+ '\t' +  tester_attribute.get_ground_att() + '\t' +  tester_heavenly_stems.get_ground_stem() + '\t' +  tester_terrestrial.get_ground_branch()+"\n";
+					txtFortune.value += '外格: ' + tester.getOutBlock()+ '\t' + tester_attribute.get_out_att() + '\t' + tester_heavenly_stems.get_out_stem() + '\t' + tester_terrestrial.get_out_branch()+"\n";
+					txtFortune.value += '總格: ' + tester.getTotalBlock()+ '\t' + tester_attribute.get_total_att() + '\t' + tester_heavenly_stems.get_total_stem() + '\t' + tester_terrestrial.get_total_branch()+"\n";
+					txtFortune.value += '財官印: ' + '\n';
+					for (var [key, value] of nature) {
+  						txtFortune.value += key + ': ' + value + '\n';
+					}
+					txtFortune.value += '破: '			
+					for(var [key, value] of absent){
+						txtFortune.value += key + ':' + value +'\n';
+					}
+					//txtFortune.value += '破: ' + Array.from(absent).join(', ') + '\n';
+					txtFortune.value += '靈數\n';
+					for (var [key, value] of nature_fortune) {
+  						txtFortune.value += key + ': ' + value + '\n';
+					}
+
+				</script>
+				</a><button  class="test-btn">事業</button>
+				</a><button  class="test-btn">家庭</button>
+				</a><button  class="test-btn">健康</button>
+				<li class="list"><a href="index.html">回上一頁</a></li>
+			  </div>
+			  
+			  
+		<div class="copyright">
+			版权所有：黃子杰的
+		</div>
+	</body>
+</html>

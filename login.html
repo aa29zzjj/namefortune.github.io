@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>登入</title>
+		<meta name="keywords" content="登入">
+		<meta name="description" content="登入">
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+	</head>
+	<body>
+		<div class="header">
+			<div class="top">
+				<div class="meihua"><img src="images/meihua.jpg"></div>
+			    <div class="logo"><a href="index.html"><img src="images/logo.png"></a></div>
+			</div>
+		</div>
+		<div class="login-box">
+			<div class="login">
+				<div class="login-left"><img src="images/bagua.png" width="450"/></div>
+				<div class="login-right">
+					<p><span class="title">會員登入</span>     <em class="nologin">還沒有會員帳號?<a href="reg.html">免費註冊</a></em></p>
+					<div class="l-name">
+						<i class="l-name-iphone"></i>
+						<input class="l-user-iphone" type="text" placeholder="電子郵件/帳號/已驗證手機">
+					</div>
+					<div class="l-name">
+						<i class="l-name-password"></i>
+						<input class="l-user-iphone" type="password" placeholder="請輸入密碼">
+					</div>
+					<div class="remember">
+						<label><input type="checkbox" name="remember" value="1" class="mind-login"><span>記住帳號密碼</span></label>
+						<a href="">忘記密碼？</a>
+					</div>
+					<button type="button" value="" class="login-btn">登入</button>
+				</div>
+			</div>
+		</div>
+		<script>
+
+  var loginButton = document.querySelector('.login-btn');
+
+  loginButton.addEventListener('click', function () {
+    var usernameInput = document.querySelector('.l-user-iphone');
+    var passwordInput = document.querySelectorAll('.l-user-iphone')[1];
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          console.log('登录成功');
+          var username = JSON.parse(xhr.responseText).name;
+          updateIndexText(username);
+          window.location.href = '/index.html';
+          // 执行登录成功后的操作
+          // 例如，可以重定向到其他页面或显示成功消息
+        } else if (xhr.status === 401) {
+          console.log('登录失败');
+          // 执行登录失败后的操作
+          // 例如，可以显示错误消息或重置输入字段
+        } else {
+          console.log('请求失败');
+          // 处理请求失败的情况
+        }
+      }
+    };
+
+    xhr.open('POST', '/login', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+      user_account: usernameInput.value,
+      password: passwordInput.value
+    }));
+    localStorage.setItem('loggedIn', 'true');
+    updateLoginStatus();
+  });
+
+  function updateIndexText(username) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        console.log('index.html 已更新');
+        // 更新登录状态
+        updateLoginStatus();
+      } else if (xhr.status !== 200) {
+        console.error('更新 index.html 时发生错误：', xhr.status);
+      }
+    };
+
+    xhr.open('POST', '/updateIndex', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+      username: username
+    }));
+  }
+		</script>
+		<div class="copyright">
+			版权所有：黃子杰的
+		</div>
+	</body>
+</html>

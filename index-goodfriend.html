@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>算命浪人</title>
+		<meta name="keywords" content="浪人部落">
+		<meta name="description" content="算命浪人">
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/jquery.jSelectDate.js"></script>
+		<script type="text/javascript">
+			function updateLoginStatus() {
+			var loginLink = document.getElementById('loginLink');
+			var logoutLink = document.getElementById('logoutLink');
+			var welcomeMessage = document.getElementById('welcomeMessage');
+
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					var loggedIn = xhr.responseText === 'true';
+					if (loggedIn) {
+						loginLink.style.display = 'none';
+						logoutLink.style.display = 'inline';
+					} else {
+						loginLink.style.display = 'inline';
+						logoutLink.style.display = 'none';
+					}
+				}
+			};
+
+			xhr.open('GET', '/check-login', true);
+			xhr.send();
+		}
+
+		function logout() {
+			localStorage.setItem("loggedIn", "false"); // 更新登录状态
+			window.location.href = '/logout';
+		}
+
+		$(document).ready(function(){
+			$("input.date").jSelectDate({
+				css:"date",
+				yearBeign: 1950,
+				disabled : false
+			});
+
+			updateLoginStatus(); // 检查登录状态
+		});
+              function saveUsername() {
+				//第一個人的名子
+                  var nameInput = document.getElementById('firstName').value;
+                  localStorage.setItem('firstName', nameInput);
+                  var nameInput = document.getElementById('lastName').value;
+                  localStorage.setItem('lastName', nameInput);
+				//第二個人的名子
+				  var nameInput = document.getElementById('friendfirstName').value;
+                  localStorage.setItem('friendfirstName', nameInput);
+                  var nameInput = document.getElementById('friendlastName').value;
+                  localStorage.setItem('friendlastName', nameInput);
+
+                  window.location.href = 'result-friendship.html'; // 導向第二個頁面
+              }
+
+		</script>
+	</head>
+	<body>
+		<div class="header">
+			<div class="top">
+				<div class="meihua"><img src="images/meihua.jpg"></div>
+			    <div class="logo"><a href=""><img src="images/logo.png"></a></div>
+			    <div class="member">
+			    	<a href="login.html" id="loginLink">會員登入</a>
+					<a href="/logout" id="logoutLink" style="display: none;" onclick="logout()">登出</a>
+			    	<a href="reg.html">註冊</a>
+			    </div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="content">
+				<p id="welcomeMessage">浪人算命，讓你好命</p>
+        <p>貴人判定</p>
+				<div class="yuan">
+					<ul class="text">
+						<li class="list"><a href="index.html">姓名學算命</a></li>
+						<li class="list1"><a href="index-goodfriend.html">貴人判定</a></li>
+						<li class="list2"><a href="">感情判定</a></li>
+						<li class="list3"><a href="">詩籤</a></li>
+						<li class="list4"><a href="">風水商店</a></li>
+					</ul>
+					<ul class="suan">
+						<li>
+							<span>請輸入您的姓名:</span>
+						</li>
+						<li>
+							<span>姓：</span>
+              				<input type="text" class="nameText" id="lastName"/>
+			  				<span>名：</span>
+              				<input type="text" class="nameText" id="firstName"/>
+						</li>
+						<li>
+							<span>請給我要判定的朋友姓名：</span>
+						</li>
+						<li>
+							<span>姓：</span>
+              				<input type="text" class="nameText" id="friendlastName"/>
+			  				<span>名：</span>
+              				<input type="text" class="nameText" id="friendfirstName"/>
+						</li>
+						<li></a><button  onclick="saveUsername()" class="test-btn">開始判定</button></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="copyright">
+			浪人部落算命小舖
+		</div>
+	<style>
+.copyrights{text-indent:-9999px;height:0;line-height:0;font-size:0;overflow:hidden;}
+</style>
+<div class="copyrights" id="links20210126">
+	Collect from <a href="https://www.kangxizidian.com/"  title="康熙辭典">康熙辭典</a>
+</div>
+</body>
+</html>
