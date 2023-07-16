@@ -5,32 +5,32 @@ const fs = require('fs');
 const app = express();
 const port = 3000;
 
-// 設定靜態文件目錄
-app.use(express.static(path.join(__dirname, 'namefortune.github.io')));
+// 设置静态文件目录
+app.use(express.static(path.join(__dirname)));
 app.use(express.json());
 
-// 處理根路徑請求
+// 处理根路径请求
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'namefortune.github.io', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// 處理註冊請求
+// 处理注册请求
 app.post('/register', (req, res) => {
   const { name, user_account, password, email } = req.body;
 
-  // 讀取現有數據
-  const filePath = path.join(__dirname, 'account.json');
+  // 读取现有数据
+  const filePath = 'account.json';
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
-      console.error('讀取文件時發生錯誤：', err);
-      res.status(500).send('讀取文件時發生錯誤');
+      console.error('读取文件时发生错误：', err);
+      res.status(500).send('读取文件时发生错误');
       return;
     }
 
-    // 解析現有數據為 JavaScript 對象
+    // 解析现有数据为JavaScript对象
     const existingData = JSON.parse(data);
 
-    // 構建要保存的數據對象
+    // 构建要保存的数据对象
     const newData = {
       name,
       user_account,
@@ -38,21 +38,21 @@ app.post('/register', (req, res) => {
       email
     };
 
-    // 將新的註冊數據添加到現有數據
+    // 将新的注册数据添加到现有数据
     existingData.push(newData);
 
-    // 將更新後的數據轉換為 JSON 字符串
+    // 将更新后的数据转换为 JSON 字符串
     const jsonData = JSON.stringify(existingData);
 
-    // 寫入更新後的數據到 JSON 文件
+    // 写入更新后的数据到 JSON 文件
     fs.writeFile(filePath, jsonData, (err) => {
       if (err) {
-        console.error('寫入文件時發生錯誤：', err);
-        res.status(500).send('寫入文件時發生錯誤');
+        console.error('写入文件时发生错误：', err);
+        res.status(500).send('写入文件时发生错误');
         return;
       }
-      console.log('數據已成功寫入 JSON 文件。');
-      res.send('註冊成功！');
+      console.log('数据已成功写入 JSON 文件。');
+      res.send('注册成功！');
     });
   });
 });
@@ -62,84 +62,105 @@ let loggedIn = false;
 app.post('/login', (req, res) => {
   const { user_account, password } = req.body;
 
-  // 讀取現有數據
-  const filePath = path.join(__dirname, 'account.json');
+  // 读取现有数据
+  const filePath = 'account.json';
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
-      console.error('讀取文件時發生錯誤：', err);
-      res.status(500).send('讀取文件時發生錯誤');
+      console.error('读取文件时发生错误：', err);
+      res.status(500).send('读取文件时发生错误');
       return;
     }
 
-    // 解析現有數據為 JavaScript 對象
+    // 解析现有数据为JavaScript对象
     const accounts = JSON.parse(data);
 
-    // 驗證用戶名和密碼
+    // 验证用户名和密码
     const account = accounts.find((acc) => acc.user_account === user_account && acc.password === password);
     if (account) {
-      console.log('登錄成功');
+      console.log('登录成功');
       loggedIn = true;
-      const indexPath = path.join(__dirname, 'namefortune.github.io', 'index.html');
-      const indexGoodfriendPath = path.join(__dirname, 'namefortune.github.io', 'index-goodfriend.html');
+      const indexPath = path.join(__dirname, 'index.html');
+      const indexGoodfriendPath = path.join(__dirname, 'index-goodfriend.html');
+      const indexLoversPath = path.join(__dirname, 'index-lovers.html');
       fs.readFile(indexPath, 'utf8', (err, indexContent) => {
         if (err) {
-          console.error('讀取文件時發生錯誤：', err);
-          res.status(500).send('讀取文件時發生錯誤');
+          console.error('读取文件时发生错误：', err);
+          res.status(500).send('读取文件时发生错误');
           return;
         }
         const updatedContent = indexContent.replace(/(<p id="welcomeMessage">)([^<]*)(<\/p>)/, '<p id="welcomeMessage">' + account.name + '，歡迎!</p>');
 
         fs.readFile(indexGoodfriendPath, 'utf8', (err, indexGoodfriendContent) => {
           if (err) {
-            console.error('讀取文件時發生錯誤：', err);
-            res.status(500).send('讀取文件時發生錯誤');
+            console.error('读取文件时发生错误：', err);
+            res.status(500).send('读取文件时发生错误');
             return;
           }
 
           const updatedGoodfriendContent = indexGoodfriendContent.replace(/(<p id="welcomeMessage">)([^<]*)(<\/p>)/, '<p id="welcomeMessage">' + account.name + '，歡迎!</p>');
 
-          fs.writeFile(indexPath, updatedContent, (err) => {
+          fs.readFile(indexLoversPath, 'utf8', (err, indexLoversContent) => {
             if (err) {
-              console.error('寫入文件時發生錯誤：', err);
-              res.status(500).send('寫入文件時發生錯誤');
+              console.error('读取文件时发生错误：', err);
+              res.status(500).send('读取文件时发生错误');
               return;
             }
 
-            fs.writeFile(indexGoodfriendPath, updatedGoodfriendContent, (err) => {
+            const updatedLoversContent = indexLoversContent.replace(/(<p id="welcomeMessage">)([^<]*)(<\/p>)/, '<p id="welcomeMessage">' + account.name + '，歡迎!</p>');
+
+            fs.writeFile(indexPath, updatedContent, (err) => {
               if (err) {
-                console.error('寫入文件時發生錯誤：', err);
-                res.status(500).send('寫入文件時發生錯誤');
+                console.error('写入文件时发生错误：', err);
+                res.status(500).send('写入文件时发生错误');
                 return;
               }
 
-              console.log('index.html 和 index-goodfriend.html 已更新');
-              res.send({ name: account.name });
+              fs.writeFile(indexGoodfriendPath, updatedGoodfriendContent, (err) => {
+                if (err) {
+                  console.error('写入文件时发生错误：', err);
+                  res.status(500).send('写入文件时发生错误');
+                  return;
+                }
+
+                fs.writeFile(indexLoversPath, updatedLoversContent, (err) => {
+                  if (err) {
+                    console.error('写入文件时发生错误：', err);
+                    res.status(500).send('写入文件时发生错误');
+                    return;
+                  }
+
+                  console.log('index.html、index-goodfriend.html 和 index-lovers.html 已更新');
+                  res.send({ name: account.name });
+                });
+              });
             });
           });
         });
       });
     } else {
-      console.log('登錄失敗');
-      res.status(401).send('用戶名或密碼錯誤');
+      console.log('登录失败');
+      res.status(401).send('用户名或密码错误');
     }
   });
 });
 
-// 處理登出請求
+
+// 处理登出请求
 app.get('/logout', async (req, res) => {
   loggedIn = false;
 
-  const indexPath = path.join(__dirname, 'namefortune.github.io', 'index.html');
-  const indexGoodfriendPath = path.join(__dirname, 'namefortune.github.io', 'index-goodfriend.html');
+  const indexPath = path.join(__dirname, 'index.html');
+  const indexGoodfriendPath = path.join(__dirname, 'index-goodfriend.html');
+  const indexLoverPath = path.join(__dirname, 'index-lovers.html');
 
   try {
     const indexContent = await fs.promises.readFile(indexPath, 'utf8');
     const updatedContent = indexContent.replace(/(<p id="welcomeMessage">)[^<]*(<\/p>)/, '$1浪人算命，讓你好命$2');
     await fs.promises.writeFile(indexPath, updatedContent);
-    console.log('index.html 已更新');
+    console.log('index.html 已更新aaaaa');
   } catch (err) {
-    console.error('處理 index.html 文件時發生錯誤：', err);
-    res.status(500).send('處理 index.html 文件時發生錯誤');
+    console.error('处理 index.html 文件时发生错误：', err);
+    res.status(500).send('处理 index.html 文件时发生错误');
     return;
   }
 
@@ -149,20 +170,32 @@ app.get('/logout', async (req, res) => {
     await fs.promises.writeFile(indexGoodfriendPath, updatedGoodfriendContent);
     console.log('index-goodfriend.html 已更新');
   } catch (err) {
-    console.error('處理 index-goodfriend.html 文件時發生錯誤：', err);
-    res.status(500).send('處理 index-goodfriend.html 文件時發生錯誤');
+    console.error('处理 index-goodfriend.html 文件时发生错误：', err);
+    res.status(500).send('处理 index-goodfriend.html 文件时发生错误');
     return;
   }
 
+  try {
+    const indexLoverContent = await fs.promises.readFile(indexLoverPath, 'utf8');
+    const updatedLoverContent = indexLoverContent.replace(/(<p id="welcomeMessage">)[^<]*(<\/p>)/, '$1浪人算命，讓你好命$2');
+    await fs.promises.writeFile(indexLoverPath, updatedLoverContent);
+    console.log('index-lovers.html 已更新aaaaa');
+  } catch (err) {
+    console.error('处理 index-lovers.html 文件时发生错误：', err);
+    res.status(500).send('处理 index-lovers.html 文件时发生错误');
+    return;
+  }
   res.redirect('/');
   return;
 });
+
 
 app.get('/check-login', (req, res) => {
   res.send(loggedIn ? 'true' : 'false');
 });
 
-// 啟動伺服器
+// 启动服务器
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+

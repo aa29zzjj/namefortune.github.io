@@ -36,7 +36,6 @@
 				<script src = "js/TerrestrailBranch.js"></script>
 				<script src = "js/kangxi.js"></script>
 				<script>
-					//自己人
 					var lastName = String(localStorage.getItem('lastName'));
 					var firstName = String(localStorage.getItem('firstName'));
 					var lastNameStoke = findLastNameStrokeByCharacter(lastName);
@@ -64,19 +63,24 @@
 					}else{
 						friend_middleName2Stroke = findLastNameStrokeByCharacter(friend_middleName);
 					}
-					var txtBazi = document.getElementById('txtBazi');
-					var txtFortune = document.getElementById('txtFortune');
-					txtBazi.value = '雙方的貴人關係: ';
-					//判定計算
-					var tester1 = new NameSeeker(lastNameStoke, middleName1Stroke, middleName2Stroke);
-					var tester2 = new NameSeeker(friend_lastNameStoke, friend_middleName1Stroke, friend_middleName2Stroke);
-					var noble_relation = new Map();
-					noble_relation = AttributeCalculator.noble_person(tester1, tester2);
-					for (var [key, value] of noble_relation) {
-  						txtFortune.value += key + ': ' + value + '\n';
-					}
+						var txtFortune = document.getElementById('txtFortune');
+						txtBazi.value = '雙方的感情關係: ';
+						txtFortune.value = "";
+						//判定計算
+						var tester1 = new NameSeeker(lastNameStoke, middleName1Stroke, middleName2Stroke);
+						var tester1_attribute = new Attribute(tester1);
+						var tester2 = new NameSeeker(friend_lastNameStoke, friend_middleName1Stroke, friend_middleName2Stroke);
+						var tester2_attribute = new Attribute(tester2);
+						var relationship = new Map();
+						relationship = AttributeCalculator.lover_match(tester1_attribute, tester2_attribute);
+						for (var [key, value] of relationship) {
+  							txtFortune.value += key + ': ' + value + '\n';
+						}
+					
 				</script>
-				<a href="index-goodfriend.html"><button  class="test-btn">回上一頁</button></a>
+
+
+				<a href="index-lovers.html"><button  class="test-btn">回上一頁</button></a>
 			  </div>
 			  
 			  
